@@ -89,89 +89,18 @@
 ---
 
 ## 4. Diagram bazy danych (ERD)
-```mermaid
-erDiagram
-  USERS {
-    int Id PK
-    string Name
-    string Email
-  }
-  PROMOTIONS {
-    int Id PK
-    string Name
-    string Description
-    int DiscountPercent
-    datetime ValidFrom
-    datetime ValidTo
-    int MinHours
-  }
-  RESERVATIONS {
-    int Id PK
-    int UserId FK
-    int PromotionId FK
-    datetime StartTime
-    datetime EndTime
-    decimal Cost
-  }
-  USERS ||--o{ RESERVATIONS : "ma"
-  PROMOTIONS ||--o{ RESERVATIONS : "przypisana do"
-```
+![image](https://github.com/user-attachments/assets/9911ff9a-1247-436b-81db-fc77224d3109)
 
 ---
 
 ## 5. Diagram REST API (endpointy i zależności)
-```mermaid
-graph TD
-  subgraph UserService
-    U1[GET /api/users]
-    U2[GET /api/users/:id]
-    U3[POST /api/users]
-    U4[PUT /api/users/:id]
-    U5[DELETE /api/users/:id]
-  end
-  subgraph PromotionService
-    P1[GET /api/promotions]
-    P2[GET /api/promotions/:id]
-    P3[GET /api/promotions/code/:code]
-    P4[POST /api/promotions]
-    P5[PUT /api/promotions/:id]
-    P6[DELETE /api/promotions/:id]
-  end
-  subgraph ReservationService
-    R1[GET /api/reservations]
-    R2[GET /api/reservations/:id]
-    R3[POST /api/reservations]
-    R4[PUT /api/reservations/:id]
-    R5[DELETE /api/reservations/:id]
-  end
-  R3 -- sprawdza --> U2
-  R3 -- sprawdza --> P3
-  R4 -- sprawdza --> U2
-  R4 -- sprawdza --> P3
-```
 
----
+![image](https://github.com/user-attachments/assets/1fccb0dd-0401-4aea-beed-f570f2dc5050)
+
 
 ## 6. Diagram przypadków użycia (UML)
-```mermaid
-graph TD
-  User([Użytkownik])
-  Admin([Admin])
-  Use1((Dodaj rezerwację))
-  Use2((Przeglądaj rezerwacje))
-  Use3((Przeglądaj promocje))
-  Use4((Dodaj użytkownika))
-  Use5((Edytuj/Usuń użytkownika))
-  Use6((Dodaj/Usuń/Edytuj promocję))
-  Use7((Przeglądaj wszystkie rezerwacje))
-  User -- Dodaje --> Use1
-  User -- Przegląda --> Use2
-  User -- Przegląda --> Use3
-  Admin -- Dodaje --> Use4
-  Admin -- Edytuje/Usuwa --> Use5
-  Admin -- Zarządza --> Use6
-  Admin -- Przegląda --> Use7
-```
+
+![image](https://github.com/user-attachments/assets/1103edea-4f37-4359-b353-184cf652f4c5)
 
 ---
 
