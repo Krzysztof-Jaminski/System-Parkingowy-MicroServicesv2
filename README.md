@@ -10,6 +10,10 @@ CRUD użytkowników:
 - `PUT    /api/users/{id}` – edytuj użytkownika
 - `DELETE /api/users/{id}` – usuń użytkownika
 
+![image](https://github.com/user-attachments/assets/c1035e0c-8b36-445f-9775-1a3d407ff719)
+
+
+
 **Model:**
 ```csharp
 UserDTO {
@@ -29,6 +33,9 @@ CRUD promocji:
 - `POST   /api/promotions` – dodaj promocję
 - `PUT    /api/promotions/{id}` – edytuj promocję
 - `DELETE /api/promotions/{id}` – usuń promocję
+
+![image](https://github.com/user-attachments/assets/a7061beb-7993-400d-aeec-8720b5bb81f7)
+
 
 **Model:**
 ```csharp
@@ -65,6 +72,7 @@ ReservationDTO {
   decimal Cost
 }
 ```
+![image](https://github.com/user-attachments/assets/d4229d01-498b-4bca-8ab6-c157ac14f1a6)
 
 ---
 
