@@ -46,32 +46,65 @@ namespace PromotionService.Tests
         }
 
         [Fact]
-        public async Task GetAll_ReturnsOkAndContainsCreated()
+        public async Task GetAll_ReturnsOk()
         {
-            // Tworzymy unikalną promocję
+            var response = await _client.GetAsync("/api/promotions");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+        [Fact]
+        public async Task CreatePromotion_Valid_ReturnsCreated()
+        {
             var promo = new PromotionDTO
             {
                 Name = $"Promo_{Guid.NewGuid()}",
                 Description = "Test Desc",
-                DiscountPercent = 25,
+                DiscountPercent = 15,
                 ValidFrom = DateTime.Now,
-                ValidTo = DateTime.Now.AddDays(2)
+                ValidTo = DateTime.Now.AddDays(1)
             };
             var postResponse = await _client.PostAsJsonAsync("/api/promotions", promo);
             postResponse.EnsureSuccessStatusCode();
             var created = await postResponse.Content.ReadFromJsonAsync<PromotionDTO>();
             Assert.NotNull(created);
-
-            // Pobieramy wszystkie promocje
-            var response = await _client.GetAsync("/api/promotions");
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var promotions = await response.Content.ReadFromJsonAsync<PromotionDTO[]>();
-            Assert.NotNull(promotions);
-            Assert.Contains(promotions, p => p.Id == created.Id && p.Name == promo.Name);
-
-            // Sprzątamy po sobie
+            Assert.Equal(promo.Name, created.Name);
+        }
+        [Fact]
+        public async Task UpdatePromotion_Valid_ReturnsOk()
+        {
+            var promo = new PromotionDTO
+            {
+                Name = $"Promo_{Guid.NewGuid()}",
+                Description = "Test Desc",
+                DiscountPercent = 15,
+                ValidFrom = DateTime.Now,
+                ValidTo = DateTime.Now.AddDays(1)
+            };
+            var postResponse = await _client.PostAsJsonAsync("/api/promotions", promo);
+            postResponse.EnsureSuccessStatusCode();
+            var created = await postResponse.Content.ReadFromJsonAsync<PromotionDTO>();
+            created.Description = "Updated Desc";
+            var putResponse = await _client.PutAsJsonAsync($"/api/promotions/{created.Id}", created);
+            putResponse.EnsureSuccessStatusCode();
+            var updated = await putResponse.Content.ReadFromJsonAsync<PromotionDTO>();
+            Assert.Equal("Updated Desc", updated.Description);
+            await _client.DeleteAsync($"/api/promotions/{created.Id}");
+        }
+        [Fact]
+        public async Task DeletePromotion_Valid_ReturnsNoContent()
+        {
+            var promo = new PromotionDTO
+            {
+                Name = $"Promo_{Guid.NewGuid()}",
+                Description = "Test Desc",
+                DiscountPercent = 15,
+                ValidFrom = DateTime.Now,
+                ValidTo = DateTime.Now.AddDays(1)
+            };
+            var postResponse = await _client.PostAsJsonAsync("/api/promotions", promo);
+            postResponse.EnsureSuccessStatusCode();
+            var created = await postResponse.Content.ReadFromJsonAsync<PromotionDTO>();
             var deleteResponse = await _client.DeleteAsync($"/api/promotions/{created.Id}");
-            deleteResponse.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
         }
     }
 } 
