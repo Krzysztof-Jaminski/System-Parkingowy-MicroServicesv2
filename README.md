@@ -59,12 +59,12 @@ erDiagram
     int DiscountPercent
     datetime ValidFrom
     datetime ValidTo
-    int? MinHours
+    int MinHours optional
   }
   RESERVATIONS {
     int Id PK
     int UserId FK
-    int? PromotionId FK
+    int PromotionId FK
     datetime StartTime
     datetime EndTime
     decimal Cost
@@ -110,16 +110,23 @@ graph TD
 
 ## 5. Diagram przypadków użycia (UML)
 ```mermaid
-usecaseDiagram
-actor "Użytkownik" as User
-actor "Admin" as Admin
-User --> (Dodaj rezerwację)
-User --> (Przeglądaj rezerwacje)
-User --> (Przeglądaj promocje)
-Admin --> (Dodaj użytkownika)
-Admin --> (Edytuj/Usuń użytkownika)
-Admin --> (Dodaj/Usuń/Edytuj promocję)
-Admin --> (Przeglądaj wszystkie rezerwacje)
+graph TD
+  User([Użytkownik])
+  Admin([Admin])
+  Use1((Dodaj rezerwację))
+  Use2((Przeglądaj rezerwacje))
+  Use3((Przeglądaj promocje))
+  Use4((Dodaj użytkownika))
+  Use5((Edytuj/Usuń użytkownika))
+  Use6((Dodaj/Usuń/Edytuj promocję))
+  Use7((Przeglądaj wszystkie rezerwacje))
+  User -- Dodaje --> Use1
+  User -- Przegląda --> Use2
+  User -- Przegląda --> Use3
+  Admin -- Dodaje --> Use4
+  Admin -- Edytuje/Usuwa --> Use5
+  Admin -- Zarządza --> Use6
+  Admin -- Przegląda --> Use7
 ```
 
 ---
@@ -166,10 +173,22 @@ Scenario: Usunięcie promocji
 
 ---
 
-## 8. Wykaz źródeł i literatury
+## 8. Przykładowe ekrany Swaggera
+
+![Swagger UserService](docs/swagger_userservice.png)
+![Swagger PromotionService](docs/swagger_promotionservice.png)
+![Swagger ReservationService](docs/swagger_reservationservice.png)
+
+---
+
+## 9. Wykaz źródeł i literatury
 - Dokumentacja Microsoft: [ASP.NET Core](https://learn.microsoft.com/aspnet/core/)
 - Dokumentacja EF Core: [Entity Framework Core](https://learn.microsoft.com/ef/core/)
 - [Mermaid Live Editor](https://mermaid.live/)
 - [Swagger](https://swagger.io/)
 - [xUnit](https://xunit.net/)
-- Własny kod i testy 
+- Własny kod i testy
+
+---
+
+**Każdy projekt (UserService, PromotionService, ReservationService) posiada własne testy jednostkowe i integracyjne.** 
