@@ -1,137 +1,104 @@
 # System Parkingowy – Mikroserwisy
 
-## Funkcjonalności i API
+---
 
-### UserService
-CRUD użytkowników:
-- `GET    /api/users` – lista użytkowników
-- `GET    /api/users/{id}` – szczegóły użytkownika
-- `POST   /api/users` – dodaj użytkownika
-- `PUT    /api/users/{id}` – edytuj użytkownika
-- `DELETE /api/users/{id}` – usuń użytkownika
-
-![image](https://github.com/user-attachments/assets/c1035e0c-8b36-445f-9775-1a3d407ff719)
-
-
-
-**Model:**
-```csharp
-UserDTO {
-  int Id
-  string Name
-  string Email
-}
-```
+## 1. Stos technologiczny
+- **Język:** C#
+- **Framework:** .NET 8 (ASP.NET Core Web API)
+- **Baza danych:** SQL Server LocalDB (każdy serwis ma własną bazę)
+- **ORM:** Entity Framework Core
+- **Testy:** xUnit (jednostkowe i integracyjne)
+- **Diagramy:** Mermaid (ERD, REST, Use Case)
+- **Narzędzia:** Swagger, Postman, Git
 
 ---
 
-### PromotionService
-CRUD promocji:
-- `GET    /api/promotions` – lista promocji
-- `GET    /api/promotions/{id}` – szczegóły promocji
-- `GET    /api/promotions/code/{code}` – pobierz promocję po kodzie
-- `POST   /api/promotions` – dodaj promocję
-- `PUT    /api/promotions/{id}` – edytuj promocję
-- `DELETE /api/promotions/{id}` – usuń promocję
-
-![image](https://github.com/user-attachments/assets/a7061beb-7993-400d-aeec-8720b5bb81f7)
-
-
-**Model:**
-```csharp
-PromotionDTO {
-  int Id
-  string Name
-  string Description
-  decimal DiscountPercent
-  DateTime ValidFrom
-  DateTime ValidTo
-  double MinHours
-}
-```
-
----
-
-### ReservationService
-CRUD rezerwacji:
-- `GET    /api/reservations` – lista rezerwacji
-- `GET    /api/reservations/{id}` – szczegóły rezerwacji
-- `POST   /api/reservations` – dodaj rezerwację (sprawdza UserService i PromotionService)
-- `PUT    /api/reservations/{id}` – edytuj rezerwację
-- `DELETE /api/reservations/{id}` – usuń rezerwację
-
-**Model:**
-```csharp
-ReservationDTO {
-  int Id
-  int UserId
-  string ParkingSpot
-  DateTime StartTime
-  DateTime EndTime
-  string PromotionCode
-  decimal Cost
-}
-```
-![image](https://github.com/user-attachments/assets/d4229d01-498b-4bca-8ab6-c157ac14f1a6)
+## 2. Instrukcja uruchamiania
+1. **Wymagania:**
+   - .NET 8 SDK
+   - SQL Server LocalDB (domyślnie w Windows)
+2. **Instalacja zależności:**
+   ```powershell
+   dotnet restore
+   ```
+3. **Tworzenie baz danych:**
+   ```powershell
+   dotnet ef database update --project UserService/UserService.csproj
+   dotnet ef database update --project PromotionService/PromotionService.csproj
+   dotnet ef database update --project ReservationService/ReservationService.csproj
+   ```
+4. **Uruchamianie serwisów (osobne konsole):**
+   ```powershell
+   dotnet run --project UserService/UserService.csproj --urls=https://localhost:5005
+   dotnet run --project PromotionService/PromotionService.csproj --urls=https://localhost:5007
+   dotnet run --project ReservationService/ReservationService.csproj --urls=https://localhost:5009
+   ```
+5. **Swagger:**
+   - UserService: https://localhost:5005/swagger
+   - PromotionService: https://localhost:5007/swagger
+   - ReservationService: https://localhost:5009/swagger
+6. **Testy:**
+   ```powershell
+   dotnet test
+   ```
 
 ---
 
-## Diagram klas (modele DTO)
+## 3. Diagram bazy danych (ERD)
 ```mermaid
-classDiagram
-  class UserDTO {
-    int Id
+erDiagram
+  USERS {
+    int Id PK
     string Name
     string Email
   }
-  class PromotionDTO {
-    int Id
+  PROMOTIONS {
+    int Id PK
     string Name
     string Description
-    decimal DiscountPercent
-    DateTime ValidFrom
-    DateTime ValidTo
-    double MinHours
+    int DiscountPercent
+    datetime ValidFrom
+    datetime ValidTo
+    int? MinHours
   }
-  class ReservationDTO {
-    int Id
-    int UserId
-    string ParkingSpot
-    DateTime StartTime
-    DateTime EndTime
-    string PromotionCode
+  RESERVATIONS {
+    int Id PK
+    int UserId FK
+    int? PromotionId FK
+    datetime StartTime
+    datetime EndTime
     decimal Cost
   }
-  ReservationDTO --> UserDTO : UserId
-  ReservationDTO --> PromotionDTO : PromotionCode
+  USERS ||--o{ RESERVATIONS : "ma"
+  PROMOTIONS ||--o{ RESERVATIONS : "przypisana do"
 ```
 
 ---
 
-## Diagram REST API
+## 4. Diagram REST API (endpointy i zależności)
 ```mermaid
 graph TD
   subgraph UserService
     U1[GET /api/users]
-    U2[GET /api/users/{id}]
+    U2[GET /api/users/:id]
     U3[POST /api/users]
-    U4[PUT /api/users/{id}]
-    U5[DELETE /api/users/{id}]
+    U4[PUT /api/users/:id]
+    U5[DELETE /api/users/:id]
   end
   subgraph PromotionService
     P1[GET /api/promotions]
-    P2[GET /api/promotions/{id}]
-    P3[GET /api/promotions/code/{code}]
+    P2[GET /api/promotions/:id]
+    P3[GET /api/promotions/code/:code]
     P4[POST /api/promotions]
-    P5[PUT /api/promotions/{id}]
-    P6[DELETE /api/promotions/{id}]
+    P5[PUT /api/promotions/:id]
+    P6[DELETE /api/promotions/:id]
   end
   subgraph ReservationService
     R1[GET /api/reservations]
-    R2[GET /api/reservations/{id}]
+    R2[GET /api/reservations/:id]
     R3[POST /api/reservations]
-    R4[PUT /api/reservations/{id}]
-    R5[DELETE /api/reservations/{id}]
+    R4[PUT /api/reservations/:id]
+    R5[DELETE /api/reservations/:id]
   end
   R3 -- sprawdza --> U2
   R3 -- sprawdza --> P3
@@ -141,16 +108,68 @@ graph TD
 
 ---
 
-## Komunikacja
-- ReservationService przy POST/PUT rezerwacji wywołuje UserService (`GET /api/users/{id}`) i PromotionService (`GET /api/promotions/code/{code}`) – synchronicznie, przez HTTP.
-- Wszystkie dane w formacie JSON.
+## 5. Diagram przypadków użycia (UML)
+```mermaid
+usecaseDiagram
+actor "Użytkownik" as User
+actor "Admin" as Admin
+User --> (Dodaj rezerwację)
+User --> (Przeglądaj rezerwacje)
+User --> (Przeglądaj promocje)
+Admin --> (Dodaj użytkownika)
+Admin --> (Edytuj/Usuń użytkownika)
+Admin --> (Dodaj/Usuń/Edytuj promocję)
+Admin --> (Przeglądaj wszystkie rezerwacje)
+```
 
 ---
 
-## Testy
-- Każdy serwis ma testy jednostkowe i integracyjne (xUnit).
-- Testy przechodzą na aktualnej konfiguracji.
+## 6. Kluczowe elementy back-endu
+
+### UserService
+- **Kontroler:** UsersController (CRUD użytkowników)
+- **Repozytorium:** UserRepository (operacje na bazie)
+- **Model:** User, UserDTO
+
+### PromotionService
+- **Kontroler:** PromotionsController (CRUD promocji)
+- **Repozytorium:** PromotionRepository
+- **Model:** Promotion, PromotionDTO
+
+### ReservationService
+- **Kontroler:** ReservationsController (CRUD rezerwacji, walidacja user/promocja przez REST)
+- **Repozytorium:** ReservationRepository
+- **Model:** Reservation, PromotionDTO
 
 ---
 
-## Zero logowania, rejestracji, profili – tylko CRUD i prosta walidacja relacji między serwisami. 
+## 7. Przypadki testowe (Gherkin)
+
+### Przykład: Dodanie rezerwacji
+```gherkin
+Scenario: Dodanie nowej rezerwacji
+  Given użytkownik istnieje w UserService
+  And promocja istnieje w PromotionService
+  When wysyłam POST /api/reservations z poprawnymi danymi
+  Then otrzymuję status 201 Created
+  And rezerwacja jest widoczna w GET /api/reservations
+```
+
+### Przykład: Usunięcie promocji
+```gherkin
+Scenario: Usunięcie promocji
+  Given istnieje promocja w PromotionService
+  When wysyłam DELETE /api/promotions/:id
+  Then otrzymuję status 204 No Content
+  And promocja znika z GET /api/promotions
+```
+
+---
+
+## 8. Wykaz źródeł i literatury
+- Dokumentacja Microsoft: [ASP.NET Core](https://learn.microsoft.com/aspnet/core/)
+- Dokumentacja EF Core: [Entity Framework Core](https://learn.microsoft.com/ef/core/)
+- [Mermaid Live Editor](https://mermaid.live/)
+- [Swagger](https://swagger.io/)
+- [xUnit](https://xunit.net/)
+- Własny kod i testy 
