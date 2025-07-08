@@ -195,27 +195,54 @@ graph TD
 ---
 
 ## 8. Przypadki testowe (Gherkin)
+
 ### Przykład: Dodanie rezerwacji
 ```gherkin
 Scenario: Dodanie nowej rezerwacji
-  Given użytkownik istnieje w UserService
-  And promocja istnieje w PromotionService
-  When wysyłam POST /api/reservations z poprawnymi danymi
-  Then otrzymuję status 201 Created
-  And rezerwacja jest widoczna w GET /api/reservations
+  Given użytkownik istnieje w systemie
+  And promocja istnieje w systemie
+  When użytkownik wysyła żądanie POST do /api/reservations z poprawnymi danymi
+  Then rezerwacja zostaje utworzona
+  And odpowiedź zawiera status 200 OK
+```
+
+### Przykład: Próba rezerwacji z nieistniejącym użytkownikiem
+```gherkin
+Scenario: Dodanie rezerwacji dla nieistniejącego użytkownika
+  Given użytkownik nie istnieje w systemie
+  When użytkownik wysyła żądanie POST do /api/reservations
+  Then odpowiedź zawiera status 400 Bad Request
+  And rezerwacja nie zostaje utworzona
 ```
 
 ### Przykład: Usunięcie promocji
 ```gherkin
-Scenario: Usunięcie promocji
-  Given istnieje promocja w PromotionService
-  When wysyłam DELETE /api/promotions/:id
-  Then otrzymuję status 204 No Content
-  And promocja znika z GET /api/promotions
+Scenario: Usunięcie istniejącej promocji
+  Given promocja istnieje w systemie
+  When użytkownik wysyła żądanie DELETE do /api/promotions/{id}
+  Then promocja zostaje usunięta
+  And odpowiedź zawiera status 200 OK
+```
+
+### Przykład: Aktualizacja użytkownika
+```gherkin
+Scenario: Aktualizacja danych użytkownika
+  Given użytkownik istnieje w systemie
+  When użytkownik wysyła żądanie PUT do /api/users/{id} z nowymi danymi
+  Then dane użytkownika zostają zaktualizowane
+  And odpowiedź zawiera status 200 OK
+```
+
+### Przykład: Pobranie wszystkich rezerwacji
+```gherkin
+Scenario: Pobranie listy rezerwacji
+  Given istnieją rezerwacje w systemie
+  When użytkownik wysyła żądanie GET do /api/reservations
+  Then odpowiedź zawiera listę rezerwacji
+  And odpowiedź zawiera status 200 OK
 ```
 
 ---
-
 
 ## 9. Wykaz źródeł i literatury
 - Dokumentacja Microsoft: [ASP.NET Core](https://learn.microsoft.com/aspnet/core/)
