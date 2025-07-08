@@ -59,7 +59,7 @@ erDiagram
     int DiscountPercent
     datetime ValidFrom
     datetime ValidTo
-    int MinHours optional
+    int MinHours
   }
   RESERVATIONS {
     int Id PK
@@ -192,3 +192,67 @@ Scenario: Usunięcie promocji
 ---
 
 **Każdy projekt (UserService, PromotionService, ReservationService) posiada własne testy jednostkowe i integracyjne.** 
+
+## API Endpoints
+
+### UserService
+
+| Metoda | Endpoint                | Opis                                      |
+|--------|-------------------------|-------------------------------------------|
+| GET    | `/api/users`            | Pobierz listę wszystkich użytkowników     |
+| GET    | `/api/users/{id}`       | Pobierz użytkownika o podanym ID          |
+| POST   | `/api/users`            | Dodaj nowego użytkownika                  |
+| PUT    | `/api/users/{id}`       | Zaktualizuj dane użytkownika o podanym ID |
+| DELETE | `/api/users/{id}`       | Usuń użytkownika o podanym ID             |
+
+### PromotionService
+
+| Metoda | Endpoint                   | Opis                                         |
+|--------|----------------------------|----------------------------------------------|
+| GET    | `/api/promotions`          | Pobierz listę wszystkich promocji            |
+| GET    | `/api/promotions/{id}`     | Pobierz promocję o podanym ID                |
+| POST   | `/api/promotions`          | Dodaj nową promocję                          |
+| PUT    | `/api/promotions/{id}`     | Zaktualizuj promocję o podanym ID            |
+| DELETE | `/api/promotions/{id}`     | Usuń promocję o podanym ID                   |
+
+### ReservationService
+
+| Metoda | Endpoint                        | Opis                                         |
+|--------|---------------------------------|----------------------------------------------|
+| GET    | `/api/reservations`             | Pobierz listę wszystkich rezerwacji          |
+| GET    | `/api/reservations/{id}`        | Pobierz rezerwację o podanym ID              |
+| POST   | `/api/reservations`             | Dodaj nową rezerwację                        |
+| PUT    | `/api/reservations/{id}`        | Zaktualizuj rezerwację o podanym ID          |
+| DELETE | `/api/reservations/{id}`        | Usuń rezerwację o podanym ID                 |
+
+---
+
+## ERD (Entity Relationship Diagram)
+
+```mermaid
+erDiagram
+  USERS {
+    int Id PK
+    string Name
+    string Email
+  }
+  PROMOTIONS {
+    int Id PK
+    string Name
+    string Description
+    int DiscountPercent
+    datetime ValidFrom
+    datetime ValidTo
+    int MinHours
+  }
+  RESERVATIONS {
+    int Id PK
+    int UserId FK
+    int PromotionId FK
+    datetime StartTime
+    datetime EndTime
+    decimal Cost
+  }
+  USERS ||--o{ RESERVATIONS : "ma"
+  PROMOTIONS ||--o{ RESERVATIONS : "przypisana do"
+```
