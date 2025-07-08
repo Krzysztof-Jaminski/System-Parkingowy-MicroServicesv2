@@ -42,6 +42,9 @@ graph TD
 - Usuwanie użytkownika (DELETE /api/users/{id})
 - Weryfikacja użytkownika na potrzeby ReservationService (GET /api/users/{id})
 
+  ![image](https://github.com/user-attachments/assets/f02d5a49-4697-4b65-8fac-4ba2ddb6da8a)
+
+
 ### ReservationService
 - Tworzenie rezerwacji (POST /api/reservations)
 - Pobieranie wszystkich rezerwacji (GET /api/reservations)
@@ -49,6 +52,9 @@ graph TD
 - Aktualizacja rezerwacji (PUT /api/reservations/{id})
 - Usuwanie rezerwacji (DELETE /api/reservations/{id})
 - Podczas tworzenia rezerwacji: sprawdzenie istnienia użytkownika (UserService) i promocji (PromotionService), obliczenie kosztu
+
+  ![image](https://github.com/user-attachments/assets/d043f0df-5767-4232-b434-eed63957c4f0)
+
 
 ### PromotionService
 - Dodawanie promocji (POST /api/promotions)
@@ -58,7 +64,8 @@ graph TD
 - Usuwanie promocji (DELETE /api/promotions/{id})
 - Promocje są wykorzystywane przez ReservationService do naliczania zniżek
 
----
+![image](https://github.com/user-attachments/assets/43774248-1deb-45d2-9f0d-ee5665b932c4)
+
 
 ## 3. Przepływ działania i komunikacja
 
